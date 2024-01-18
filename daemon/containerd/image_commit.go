@@ -78,6 +78,8 @@ func (i *ImageService) CommitImage(ctx context.Context, cc backend.CommitConfig)
 	if err != nil {
 		return "", fmt.Errorf("failed to export layer: %w", err)
 	}
+	logrus.Debugf("diffLayerDesc: %+v\n", diffLayerDesc)
+	logrus.Debugf("diffID: %s\n", diffID)
 
 	imageConfig := generateCommitImageConfig(ociimage, diffID, cc)
 
@@ -85,6 +87,7 @@ func (i *ImageService) CommitImage(ctx context.Context, cc backend.CommitConfig)
 	if err := applyDiffLayer(ctx, rootfsID, ociimage, sn, differ, diffLayerDesc); err != nil {
 		return "", fmt.Errorf("failed to apply diff: %w", err)
 	}
+	logrus.Debugf("rootfsID: %s\n", rootfsID)
 
 	layers := append(manifest.Layers, diffLayerDesc)
 	commitManifestDesc, err := writeContentsForImage(ctx, container.Driver, cs, imageConfig, layers)
@@ -256,6 +259,8 @@ func applyDiffLayer(ctx context.Context, name string, baseImg ocispec.Image, sn 
 	if err != nil {
 		return err
 	}
+	logrus.Debugf("mount: %+v\n", mount)
+	logrus.Debugf("diffDesc: %+v\n", diffDesc)
 
 	defer func() {
 		if retErr != nil {
