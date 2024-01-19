@@ -160,6 +160,7 @@ func (is *store) Create(config []byte) (ID, error) {
 	}
 
 	layerID := img.RootFS.ChainID()
+	logrus.Debugf("looking for layer %s", layerID)
 
 	var l layer.Layer
 	if layerID != "" {
