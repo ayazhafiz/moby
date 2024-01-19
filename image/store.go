@@ -168,7 +168,7 @@ func (is *store) Create(config []byte) (ID, error) {
 		}
 		l, err = is.lss.Get(layerID)
 		if err != nil {
-			return "", errdefs.InvalidParameter(errors.Wrapf(err, "failed to get layer %s", layerID))
+			return "", errdefs.InvalidParameter(errors.Wrapf(err, "here: failed to get layer %s", layerID))
 		}
 	}
 
