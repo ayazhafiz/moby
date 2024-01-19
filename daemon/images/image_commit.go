@@ -39,7 +39,7 @@ func (i *ImageService) CommitImage(ctx context.Context, c backend.CommitConfig) 
 		}
 	}
 
-	l, err := i.layerStore.Register(rwTar, image.NewRootFS().ChainID())
+	l, err := i.layerStore.Register(rwTar, parent.RootFS.ChainID())
 	if err != nil {
 		return "", err
 	}
@@ -64,9 +64,9 @@ func (i *ImageService) CommitImage(ctx context.Context, c backend.CommitConfig) 
 	}
 
 	if c.ParentImageID != "" {
-		//if err := i.imageStore.SetParent(id, image.ID(c.ParentImageID)); err != nil {
-		//	return "", err
-		//}
+		if err := i.imageStore.SetParent(id, image.ID(c.ParentImageID)); err != nil {
+			return "", err
+		}
 	}
 	return id, nil
 }
