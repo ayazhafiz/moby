@@ -39,7 +39,7 @@ func (i *ImageService) CommitImage(ctx context.Context, c backend.CommitConfig) 
 		}
 	}
 
-	l, err := i.layerStore.Register(rwTar, parent.RootFS.ChainID())
+	l, err := i.layerStore.Register(rwTar, image.NewRootFS().ChainID())
 	if err != nil {
 		return "", err
 	}

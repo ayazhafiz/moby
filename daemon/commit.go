@@ -166,7 +166,7 @@ func (daemon *Daemon) CreateImageFromContainer(ctx context.Context, name string,
 		ContainerID:         container.ID,
 		ContainerMountLabel: container.MountLabel,
 		ContainerOS:         container.OS,
-		ParentImageID:       "",
+		ParentImageID:       string(container.ImageID),
 	})
 	if err != nil {
 		return "", err
