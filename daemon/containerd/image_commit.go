@@ -27,6 +27,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	logger = logrus.WithField("module", "image_commit")
+)
+
 /*
 This code is based on `commit` support in nerdctl, under Apache License
 https://github.com/containerd/nerdctl/blob/master/pkg/imgutil/commit/commit.go
@@ -35,6 +39,8 @@ with adaptations to match the Moby data model and services.
 
 // CommitImage creates a new image from a commit config.
 func (i *ImageService) CommitImage(ctx context.Context, cc backend.CommitConfig) (image.ID, error) {
+	logger.Debugf("CommitImage(): %+v\n", cc)
+
 	container := i.containers.Get(cc.ContainerID)
 	cs := i.client.ContentStore()
 
@@ -78,8 +84,8 @@ func (i *ImageService) CommitImage(ctx context.Context, cc backend.CommitConfig)
 	if err != nil {
 		return "", fmt.Errorf("failed to export layer: %w", err)
 	}
-	logrus.Debugf("diffLayerDesc: %+v\n", diffLayerDesc)
-	logrus.Debugf("diffID: %s\n", diffID)
+	logger.Debugf("diffLayerDesc: %+v\n", diffLayerDesc)
+	logger.Debugf("diffID: %s\n", diffID)
 
 	imageConfig := generateCommitImageConfig(ociimage, diffID, cc)
 
@@ -87,7 +93,7 @@ func (i *ImageService) CommitImage(ctx context.Context, cc backend.CommitConfig)
 	if err := applyDiffLayer(ctx, rootfsID, ociimage, sn, differ, diffLayerDesc); err != nil {
 		return "", fmt.Errorf("failed to apply diff: %w", err)
 	}
-	logrus.Debugf("rootfsID: %s\n", rootfsID)
+	logger.Debugf("rootfsID: %s\n", rootfsID)
 
 	layers := append(manifest.Layers, diffLayerDesc)
 	commitManifestDesc, err := writeContentsForImage(ctx, container.Driver, cs, imageConfig, layers)
@@ -259,8 +265,8 @@ func applyDiffLayer(ctx context.Context, name string, baseImg ocispec.Image, sn 
 	if err != nil {
 		return err
 	}
-	logrus.Debugf("mount: %+v\n", mount)
-	logrus.Debugf("diffDesc: %+v\n", diffDesc)
+	logger.Debugf("mount: %+v\n", mount)
+	logger.Debugf("diffDesc: %+v\n", diffDesc)
 
 	defer func() {
 		if retErr != nil {

@@ -13,6 +13,11 @@ import (
 	"github.com/docker/docker/builder/dockerfile"
 	"github.com/docker/docker/errdefs"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+)
+
+var (
+	logger = logrus.WithField("module", "image_commit")
 )
 
 // merge merges two Config, the image container configuration (defaults values),
@@ -154,6 +159,8 @@ func (daemon *Daemon) CreateImageFromContainer(ctx context.Context, name string,
 	if err := merge(newConfig, container.Config); err != nil {
 		return "", err
 	}
+
+	logrus.Debugf("Committing container %s on image %s", container.ID, name)
 
 	id, err := daemon.imageService.CommitImage(ctx, backend.CommitConfig{
 		Author:              c.Author,
