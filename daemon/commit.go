@@ -16,10 +16,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	logger = logrus.WithField("module", "image_commit")
-)
-
 // merge merges two Config, the image container configuration (defaults values),
 // and the user container configuration, either passed by the API or generated
 // by the cli.
